@@ -44,7 +44,7 @@ app.post('/users', (request, response) => {
 
 app.get('/users', (request, response) => {
   if(users.length === 0) {
-    return response.status(400).json({ "error": "Don't have users cadastred" });
+    return response.status(400).json({ "error": "There are no cadastred users" });
   }
 
   return response.json(users);
@@ -70,7 +70,21 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { title, deadline } = request.body;
+  const { id } = request.params;
+  const { todos } = user;
+
+  const todoAlreadyExists = todos.find((todo) => todo.id === id);
+
+  if(!todoAlreadyExists) {
+    return response.status(400).json({ "error": "Todo not exists" });
+  }
+
+  todoAlreadyExists.title = title;
+  todoAlreadyExists.deadline = deadline;
+
+  return response.json(todoAlreadyExists);
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
