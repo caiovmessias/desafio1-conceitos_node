@@ -44,7 +44,7 @@ app.post('/users', (request, response) => {
 
 app.get('/users', (request, response) => {
   if(users.length === 0) {
-    return response.status(400).json({ "error": "There are no cadastred users" });
+    return response.status(404).json({ "error": "There are no cadastred users" });
   }
 
   return response.json(users);
@@ -78,7 +78,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const todoAlreadyExists = todos.find((todo) => todo.id === id);
 
   if(!todoAlreadyExists) {
-    return response.status(400).json({ "error": "Todo not exists" });
+    return response.status(404).json({ "error": "Todo not exists" });
   }
 
   todoAlreadyExists.title = title;
@@ -94,7 +94,7 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const todoAlreadyExists = user.todos.find((todo) => todo.id === id);
 
   if(!todoAlreadyExists) {
-    return response.status(400).json({ "error": "Todo not exists" });
+    return response.status(404).json({ "error": "Todo not exists" });
   }
 
   todoAlreadyExists.done = true;
@@ -107,15 +107,15 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   const { id } = request.params;
   const { todos } = user;
 
-  const indexTodo = todos.indexOf((todo) => todo.id === id);
+  const indexTodo = todos.findIndex((todo) => todo.id === id);
 
-  if(!indexTodo) {
-    return response.status(400).json({ "error": "Todo not exists" });
+  if(indexTodo < 0) {
+    return response.status(404).json({ "error": "Todo not exists" });
   }
 
   todos.splice(indexTodo, 1);
 
-  return response.json(todos);
+  return response.status(204).json(todos);
 
 });
 
