@@ -88,11 +88,35 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+
+  const todoAlreadyExists = user.todos.find((todo) => todo.id === id);
+
+  if(!todoAlreadyExists) {
+    return response.status(400).json({ "error": "Todo not exists" });
+  }
+
+  todoAlreadyExists.done = true;
+
+  return response.json(todoAlreadyExists);
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+  const { todos } = user;
+
+  const indexTodo = todos.indexOf((todo) => todo.id === id);
+
+  if(!indexTodo) {
+    return response.status(400).json({ "error": "Todo not exists" });
+  }
+
+  todos.splice(indexTodo, 1);
+
+  return response.json(todos);
+
 });
 
 module.exports = app;
