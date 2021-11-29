@@ -16,7 +16,7 @@ function checksExistsUserAccount(request, response, next) {
   const userAlreadyExists = users.find((user) => user.username === username);
 
   if(!userAlreadyExists) {
-    return response.status(400).json({ "error": "User not exists" });
+    return response.status(404).json({ "error": "User not exists" });
   }
 
   request.user = userAlreadyExists;
@@ -112,7 +112,7 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   if(indexTodo < 0) {
     return response.status(404).json({ "error": "Todo not exists" });
   }
-
+  
   todos.splice(indexTodo, 1);
 
   return response.status(204).json(todos);
