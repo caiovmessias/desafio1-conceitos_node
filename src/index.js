@@ -82,7 +82,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   }
 
   todoAlreadyExists.title = title;
-  todoAlreadyExists.deadline = deadline;
+  todoAlreadyExists.deadline = new Date(deadline);
 
   return response.json(todoAlreadyExists);
 });
@@ -107,15 +107,15 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   const { id } = request.params;
   const { todos } = user;
 
-  const indexTodo = todos.findIndex((todo) => todo.id === id);
+  const todoIndex = todos.findIndex((todo) => todo.id === id);
 
-  if(indexTodo < 0) {
+  if(todoIndex < 0) {
     return response.status(404).json({ "error": "Todo not exists" });
   }
   
-  todos.splice(indexTodo, 1);
+  todos.splice(todoIndex, 1);
 
-  return response.status(204).json(todos);
+  return response.status(204).json();
 
 });
 
